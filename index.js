@@ -3,14 +3,14 @@ var cpBut = document.getElementById("cpBut");
 var ctx = c.getContext("2d");
 var clickedCp = false;
 // variaveis globais que uso no addControlPoint - nao me julgue pf
-var pointCount, prevPoint;
+var pointCount, prevPoint, curveCount = 0;
+var controlList = [];
 
 function addControlPoint(e){
     // ajeitando o problema de pegar a posicao com flexbox
     var posX = e.pageX - c.getBoundingClientRect().left;
     var posY = e.pageY - c.getBoundingClientRect().top;
 
-    pointCount++;
     ctx.beginPath();
     ctx.arc(posX, posY, 2, 0, 2 * Math.PI, false);
     ctx.fillStyle = 'black';
@@ -20,12 +20,10 @@ function addControlPoint(e){
     ctx.stroke();
 
     // se tiver mais de um ponto, eu faco uma linha
-    if(pointCount > 1){
-        ctx.moveTo(prevPoint[0], prevPoint[1]);
-        ctx.lineTo(posX, posY);
-        ctx.stroke();
-    }
+    if(pointCount > 0) drawLine(prevPoint, [posX,posY]);
     prevPoint = [posX, posY];
+    controlList[curveCount][pointCount] = [posX,posY];
+    pointCount++;
 }
 
 function cpClick(){
@@ -33,11 +31,23 @@ function cpClick(){
         clickedCp = true;
         pointCount = 0;
         cpBut.innerHTML = "Criar curva";
-
+        controlList[curveCount] = [];
         c.addEventListener("click", addControlPoint);
     } else {
         clickedCp = false;
+        curveCount++;
         cpBut.innerHTML = "Adicionar pontos de controle";
         c.removeEventListener("click", addControlPoint);
+
+        for(var i = 0; i < curveCount; i++){
+            console.log(controlList[i]);
+        }
     }
+}
+
+function drawLine(pointA, pointB){
+    ctx.beginPath();
+    ctx.moveTo(pointA[0], pointA[1]);
+    ctx.lineTo(pointB[0], pointB[1]);
+    ctx.stroke();
 }

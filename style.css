@@ -22,7 +22,7 @@ body {
     margin: 20px;
 }
 
-#cpBut {
+button {
     padding: 10px;
     font-size: 16px;
     border: 1px solid #69d0c8;
@@ -32,13 +32,23 @@ body {
     -webkit-box-shadow: 0px 6px 5px 0px rgba(0,0,0,0.13);
     -moz-box-shadow: 0px 6px 5px 0px rgba(0,0,0,0.13);
     box-shadow: 0px 6px 5px 0px rgba(0,0,0,0.13);
+    text-transform: capitalize;
 }
 
-#cpBut:active {
+button:active {
     box-shadow: 0 0 0;
     transform: translateY(4px);
 }
 
-#cpBut:focus{
+button:focus{
+    outline: none;
+}
+
+#botoes label{
+    font-family: Arial;
+}
+
+#avNum:focus {
+    color: #f08b9c;
     outline: none;
 }

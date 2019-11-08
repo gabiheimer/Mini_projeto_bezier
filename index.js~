@@ -1,30 +1,26 @@
 var c = document.getElementById("canvas");
 var cpBut = document.getElementById("cpBut");
 var ctx = c.getContext("2d");
-var avInput = document.getElementById("avNum");
-
-// bools de botoes
-var clickedCp = false, clickedEraseCp = false;;
-
+var clickedCp = false;
 // variaveis globais que uso no addControlPoint - nao me julgue pf
 var pointCount, prevPoint, curveCount = 0, qttPoints = 100;
 var controlList = [], pointList = [];
-
-// event listeners que sempre tao ligados
-avInput.addEventListener("keypress", (e) => {
-    var key = e.which || e.keyCode;
-    if(key == 13 && avInput.value != ""){
-        qttPoints = avInput.value;
-        avInput.blur();
-    }
-});
 
 function addControlPoint(e){
     // ajeitando o problema de pegar a posicao com flexbox
     var posX = e.clientX - c.getBoundingClientRect().left;
     var posY = e.clientY - c.getBoundingClientRect().top;
 
-    drawCp([posX, posY]);
+    ctx.beginPath();
+    ctx.strokeStyle = "#f08b9c";
+    ctx.lineWidth = 1;
+    ctx.arc(posX, posY, 2, 0, 2 * Math.PI, false);
+    ctx.fillStyle = '#f08b9c';
+    ctx.fill();
+    ctx.stroke();
+    ctx.arc(posX, posY, 6, 0, 2 * Math.PI, false);
+    ctx.stroke();
+
     // se tiver mais de um ponto, eu faco uma linha
     if(pointCount > 0) drawLine(prevPoint, [posX,posY], "#f08b9c");
     prevPoint = [posX, posY];
@@ -82,61 +78,4 @@ function drawCurve(){
         pointList[curveCount][q] = deCast(t);
         if(q > 0) drawLine(pointList[curveCount][q-1], pointList[curveCount][q], "#afcbff");
     }
-}
-
-function clearCanvas(){
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // tirando curvas da memoria
-    curveCount = 0;
-    controlList = [];
-    pointList = [];
-    // caso a pessoa clicou nisso enquanto criava uma curva
-    if(clickedCp){
-        clickedCp = false;
-        cpBut.innerHTML = "Adicionar pontos de controle";
-        c.removeEventListener("click", addControlPoint);
-    }
-
-}
-
-function ecpButClick(){
-    if(!clickedEraseCp){
-        clickedEraseCp = true
-        eraseCps();
-    } else {
-        clickedEraseCp = false;
-        for(var i = 0; i < controlList.length; i++){
-            for(var j = 0; j < controlList[i].length; j++){
-                drawCp(controlList[i][j]);
-            }
-        }
-    }
-}
-
-function eraseCps(){
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // desenhar linhas
-    for(var i = 0; i < controlList.length; i++){
-        for(var j = 1; j < controlList[i].length; j++){
-            drawLine(controlList[i][j-1], controlList[i][j], "#f08b9c");
-        }
-    }
-    // desenhar curva
-    for(var i = 0; i < pointList.length; i++){
-        for(var j = 1; j < pointList[i].length; j++){
-            drawLine(pointList[i][j-1], pointList[i][j], "#afcbff");
-        }
-    }
-}
-
-function drawCp(point){
-    ctx.beginPath();
-    ctx.strokeStyle = "#f08b9c";
-    ctx.lineWidth = 1;
-    ctx.arc(point[0], point[1], 2, 0, 2 * Math.PI, false);
-    ctx.fillStyle = '#f08b9c';
-    ctx.fill();
-    ctx.stroke();
-    ctx.arc(point[0], point[1], 6, 0, 2 * Math.PI, false);
-    ctx.stroke();
 }

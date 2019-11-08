@@ -8,7 +8,11 @@
     <body>
         <canvas id="canvas" width="1100" height="700"></canvas>
         <div id="botoes">
+            <label for="avNum">Pontos de Avaliação:</label>
+            <input id="avNum"type="number" placeholder="100">
             <button onclick="cpClick()" id="cpBut">Adicionar pontos de controle</button>
+            <button onclick="clearCanvas()" id="clearBut">Limpar canvas</button>
+            <button onclick="ecpButClick()">Apagar pontos de controle</button>
         </div>
 
         <script src="index.js"></script>

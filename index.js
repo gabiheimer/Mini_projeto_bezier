@@ -4,9 +4,10 @@ var ctx = c.getContext("2d");
 var avInput = document.getElementById("avNum");
 var hcpBut = document.getElementById("hcpBut");
 var hLinesBut = document.getElementById("hLinesBut");
+var hCurBut = document.getElementById("hCurvesBut");
 
 // bools de botoes
-var clickedCp = false, hiddenCp = false, hiddenLines = false;
+var clickedCp = false, hiddenCp = false, hiddenLines = false, hiddenCurves = false;
 
 // variaveis globais que uso no addControlPoint - nao me julgue pf
 var pointCount, prevPoint, curveCount = 0, qttPoints = 100;
@@ -20,6 +21,11 @@ avInput.addEventListener("keypress", (e) => {
         avInput.blur();
     }
 });
+
+function cleanInput(){
+    avInput.placeholder = avInput.value;
+    avInput.value = "";
+}
 
 function addControlPoint(e){
     // ajeitando o problema de pegar a posicao com flexbox
@@ -128,9 +134,11 @@ function hideCps(){
         }
     }
     // desenhar curva
-    for(var i = 0; i < pointList.length; i++){
-        for(var j = 1; j < pointList[i].length; j++){
-            drawLine(pointList[i][j-1], pointList[i][j], "#afcbff");
+    if(!hiddenCurves){
+        for(var i = 0; i < pointList.length; i++){
+            for(var j = 1; j < pointList[i].length; j++){
+                drawLine(pointList[i][j-1], pointList[i][j], "#afcbff");
+            }
         }
     }
 }
@@ -158,9 +166,11 @@ function hideLines(){
         }
     }
     // desenhar curva
-    for(var i = 0; i < pointList.length; i++){
-        for(var j = 1; j < pointList[i].length; j++){
-            drawLine(pointList[i][j-1], pointList[i][j], "#afcbff");
+    if(!hiddenCurves){
+        for(var i = 0; i < pointList.length; i++){
+            for(var j = 1; j < pointList[i].length; j++){
+                drawLine(pointList[i][j-1], pointList[i][j], "#afcbff");
+            }
         }
     }
 }
@@ -176,6 +186,37 @@ function hlButClick(){
         for(var i = 0; i < controlList.length; i++){
             for(var j = 1; j < controlList[i].length; j++){
                 drawLine(controlList[i][j-1], controlList[i][j], "#f08b9c");
+            }
+        }
+    }
+}
+
+function hcurButClick(){
+    if(!hiddenCurves){
+        hiddenCurves = true;
+        hCurBut.innerHTML = "Mostrar curvas";
+        hideCurves();
+    } else {
+        hiddenCurves = false;
+        hCurBut.innerHTML = "Esconder curvas";
+        for(var i = 0; i < pointList.length; i++){
+            for(var j = 1; j < pointList[i].length; j++){
+                drawLine(pointList[i][j-1], pointList[i][j], "#afcbff");
+            }
+        }
+    }
+}
+
+function hideCurves(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // desenhar pontos e linhas
+    if(!hiddenCp || !hiddenLines){
+        for(var i = 0; i < controlList.length; i++){
+            for(var j = 0; j < controlList[i].length; j++){
+                if(!hiddenCp) drawCp(controlList[i][j]);
+                if(j>0 && !hiddenLines){
+                    drawLine(controlList[i][j-1], controlList[i][j], "#f08b9c");
+                }
             }
         }
     }

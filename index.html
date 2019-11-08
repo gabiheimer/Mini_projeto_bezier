@@ -9,11 +9,12 @@
         <canvas id="canvas" width="1100" height="700"></canvas>
         <div id="botoes">
             <label for="avNum">Pontos de Avaliação:</label>
-            <input id="avNum"type="number" placeholder="100">
+            <input id="avNum" type="number" placeholder="100" onclick="cleanInput()">
             <button onclick="cpClick()" id="cpBut">Adicionar pontos de controle</button>
             <button onclick="clearCanvas()" id="clearBut">Limpar canvas</button>
             <button id="hcpBut" onclick="hcpButClick()">Esconder pontos de controle</button>
             <button id="hLinesBut" onclick="hlButClick()">Esconder linhas de controle</button>
+            <button id="hCurvesBut" onclick="hcurButClick()">Esconder curvas</button>
         </div>
 
         <script src="index.js"></script>

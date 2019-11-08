@@ -13,11 +13,13 @@ body {
 
 #canvas{
     background-color: white;
-    border: 5px solid #d8dfda;
+    -webkit-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.13);
+    -moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.13);
+    box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.13);
 }
 
 #botoes {
-    margin: 10px;
+    margin: 20px;
 }
 
 #cpBut {
@@ -27,7 +29,9 @@ body {
     background-color: #69d0c8;
     border-radius: 10px;
     color: #fff;
-    box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+    -webkit-box-shadow: 0px 6px 5px 0px rgba(0,0,0,0.13);
+    -moz-box-shadow: 0px 6px 5px 0px rgba(0,0,0,0.13);
+    box-shadow: 0px 6px 5px 0px rgba(0,0,0,0.13);
 }
 
 #cpBut:active {

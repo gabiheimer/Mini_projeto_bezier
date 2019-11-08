@@ -2,6 +2,13 @@ html {
     height: 100%;
 }
 
+/*tirando setinhas feias do input*/
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
 body {
     background-image: linear-gradient(-90deg, #f3ffe3, #ace7ff);
     display: flex;

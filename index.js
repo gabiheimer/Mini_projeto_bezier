@@ -8,19 +8,21 @@ var controlList = [], pointList = [];
 
 function addControlPoint(e){
     // ajeitando o problema de pegar a posicao com flexbox
-    var posX = e.pageX - c.getBoundingClientRect().left;
-    var posY = e.pageY - c.getBoundingClientRect().top;
+    var posX = e.clientX - c.getBoundingClientRect().left;
+    var posY = e.clientY - c.getBoundingClientRect().top;
 
     ctx.beginPath();
+    ctx.strokeStyle = "#f08b9c";
+    ctx.lineWidth = 1;
     ctx.arc(posX, posY, 2, 0, 2 * Math.PI, false);
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = '#f08b9c';
     ctx.fill();
     ctx.stroke();
     ctx.arc(posX, posY, 6, 0, 2 * Math.PI, false);
     ctx.stroke();
 
     // se tiver mais de um ponto, eu faco uma linha
-    if(pointCount > 0) drawLine(prevPoint, [posX,posY]);
+    if(pointCount > 0) drawLine(prevPoint, [posX,posY], "#f08b9c");
     prevPoint = [posX, posY];
     controlList[curveCount][pointCount] = [posX,posY];
     pointCount++;
@@ -42,10 +44,12 @@ function cpClick(){
     }
 }
 
-function drawLine(pointA, pointB){
+function drawLine(pointA, pointB, color){
     ctx.beginPath();
     ctx.moveTo(pointA[0], pointA[1]);
     ctx.lineTo(pointB[0], pointB[1]);
+    ctx.strokeStyle = color;
+    color == "#afcbff" ? ctx.lineWidth = 3 : ctx.lineWidth = 1;
     ctx.stroke();
 }
 
@@ -72,6 +76,6 @@ function drawCurve(){
     for(var q = 0; q < qttPoints; q++){
         var t = q*1/qttPoints;
         pointList[curveCount][q] = deCast(t);
-        if(q > 0) drawLine(pointList[curveCount][q-1], pointList[curveCount][q]);
+        if(q > 0) drawLine(pointList[curveCount][q-1], pointList[curveCount][q], "#afcbff");
     }
 }

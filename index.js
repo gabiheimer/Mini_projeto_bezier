@@ -2,9 +2,11 @@ var c = document.getElementById("canvas");
 var cpBut = document.getElementById("cpBut");
 var ctx = c.getContext("2d");
 var avInput = document.getElementById("avNum");
+var hcpBut = document.getElementById("hcpBut");
+var hLinesBut = document.getElementById("hLinesBut");
 
 // bools de botoes
-var clickedCp = false, clickedEraseCp = false;;
+var clickedCp = false, hiddenCp = false, hiddenLines = false;
 
 // variaveis globais que uso no addControlPoint - nao me julgue pf
 var pointCount, prevPoint, curveCount = 0, qttPoints = 100;
@@ -99,12 +101,14 @@ function clearCanvas(){
 
 }
 
-function ecpButClick(){
-    if(!clickedEraseCp){
-        clickedEraseCp = true
-        eraseCps();
+function hcpButClick(){
+    if(!hiddenCp){
+        hiddenCp = true;
+        hcpBut.innerHTML = "Mostrar pontos de Controle";
+        hideCps();
     } else {
-        clickedEraseCp = false;
+        hiddenCp = false;
+        hcpBut.innerHTML = "Esconder pontos de Controle";
         for(var i = 0; i < controlList.length; i++){
             for(var j = 0; j < controlList[i].length; j++){
                 drawCp(controlList[i][j]);
@@ -113,12 +117,14 @@ function ecpButClick(){
     }
 }
 
-function eraseCps(){
+function hideCps(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     // desenhar linhas
-    for(var i = 0; i < controlList.length; i++){
-        for(var j = 1; j < controlList[i].length; j++){
-            drawLine(controlList[i][j-1], controlList[i][j], "#f08b9c");
+    if(!hiddenLines){
+        for(var i = 0; i < controlList.length; i++){
+            for(var j = 1; j < controlList[i].length; j++){
+                drawLine(controlList[i][j-1], controlList[i][j], "#f08b9c");
+            }
         }
     }
     // desenhar curva
@@ -139,4 +145,38 @@ function drawCp(point){
     ctx.stroke();
     ctx.arc(point[0], point[1], 6, 0, 2 * Math.PI, false);
     ctx.stroke();
+}
+
+function hideLines(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // desenhar pontos
+    if(!hiddenCp){
+        for(var i = 0; i < controlList.length; i++){
+            for(var j = 0; j < controlList[i].length; j++){
+                drawCp(controlList[i][j]);
+            }
+        }
+    }
+    // desenhar curva
+    for(var i = 0; i < pointList.length; i++){
+        for(var j = 1; j < pointList[i].length; j++){
+            drawLine(pointList[i][j-1], pointList[i][j], "#afcbff");
+        }
+    }
+}
+
+function hlButClick(){
+    if(!hiddenLines){
+        hiddenLines = true;
+        hLinesBut.innerHTML = "Mostrar linhas de controle";
+        hideLines();
+    } else {
+        hiddenLines = false;
+        hLinesBut.innerHTML = "Esconder linhas de controle";
+        for(var i = 0; i < controlList.length; i++){
+            for(var j = 1; j < controlList[i].length; j++){
+                drawLine(controlList[i][j-1], controlList[i][j], "#f08b9c");
+            }
+        }
+    }
 }

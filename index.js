@@ -35,9 +35,9 @@ function addControlPoint(e){
     var posX = e.clientX - c.getBoundingClientRect().left;
     var posY = e.clientY - c.getBoundingClientRect().top;
 
-    drawCp([posX, posY]);
+    if(!hiddenCp) drawCp([posX, posY]);
     // se tiver mais de um ponto, eu faco uma linha
-    if(pointCount > 0) drawLine(prevPoint, [posX,posY], "#f08b9c", 1);
+    if(pointCount > 0 && !hiddenLines) drawLine(prevPoint, [posX,posY], "#f08b9c", 1, false);
     prevPoint = [posX, posY];
     controlList[curveCount][pointCount] = [posX,posY];
     pointCount++;
@@ -55,11 +55,12 @@ function drawCp(point){
     ctx.stroke();
 }
 
-function drawLine(pointA, pointB, color, size){
+function drawLine(pointA, pointB, color, size, selCurve){
     ctx.beginPath();
     ctx.moveTo(pointA[0], pointA[1]);
     ctx.lineTo(pointB[0], pointB[1]);
-    ctx.strokeStyle = color;
+    if(selCurve) ctx.strokeStyle = "#ffab7b";
+    else ctx.strokeStyle = color;
     ctx.lineWidth = size;
     ctx.stroke();
 }
@@ -69,7 +70,7 @@ function drawCurve(){
     for(var q = 0; q <= qttPoints; q++){
         var t = q*1/qttPoints;
         pointList[curveCount][q] = deCast(t);
-        if(q > 0) drawLine(pointList[curveCount][q-1], pointList[curveCount][q], "#afcbff", 3);
+        if(q > 0 && !hiddenCurves) drawLine(pointList[curveCount][q-1], pointList[curveCount][q], "#afcbff", 3, false);
     }
 }
 
@@ -77,7 +78,8 @@ function drawExtCurves(){
     if(!hiddenCurves){
         for(var i = 0; i < pointList.length; i++){
             for(var j = 1; j < pointList[i].length; j++){
-                drawLine(pointList[i][j-1], pointList[i][j], "#afcbff", 3);
+                if(i == selectedCurve) drawLine(pointList[i][j-1], pointList[i][j], "#afcbff", 3, true);
+                else drawLine(pointList[i][j-1], pointList[i][j], "#afcbff", 3, false);
             }
         }
     }
@@ -87,7 +89,7 @@ function drawExtLines(){
     if(!hiddenLines){
         for(var i = 0; i < controlList.length; i++){
             for(var j = 1; j < controlList[i].length; j++){
-                drawLine(controlList[i][j-1], controlList[i][j], "#f08b9c", 1);
+                drawLine(controlList[i][j-1], controlList[i][j], "#f08b9c", 1, false);
             }
         }
     }
@@ -178,6 +180,18 @@ function hcurButClick(){
     }
 }
 
+function selButClick(){
+    if(selectedCurve == curveCount-1){
+        selectedCurve = 0;
+    } else {
+        selectedCurve++;
+    }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawExtPoints();
+    drawExtLines();
+    drawExtCurves();
+}
+
 // ================ ALGORITMO DA CURVA ======================
 
 function deCast(u){
@@ -196,24 +210,4 @@ function deCast(u){
     }
 
     return Q[0];
-}
-
-function selButClick(){
-    if(selectedCurve == curveCount-1){
-        selectedCurve = 0;
-    } else {
-        selectedCurve++;
-    }
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawExtPoints();
-    drawExtLines();
-    // desenhar curvas
-    if(!hiddenCurves){
-        for(var i = 0; i < pointList.length; i++){
-            for(var j = 1; j < pointList[i].length; j++){
-                if(i == selectedCurve) drawLine(pointList[i][j-1], pointList[i][j], "#ffab7b", 3);
-                else drawLine(pointList[i][j-1], pointList[i][j], "#afcbff", 3);
-            }
-        }
-    }
 }

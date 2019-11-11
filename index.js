@@ -15,6 +15,7 @@ var clickedCp = false;
 var pointCount, prevPoint, curveCount = 0, qttPoints = 100;
 var controlList = [], pointList = [];
 var selectedCurve = -1;
+var selectedPoint = [-1,-1];
 
 // ================ EVENT LISTENERS ======================
 avInput.addEventListener("keypress", (e) => {
@@ -35,64 +36,94 @@ function addControlPoint(e){
     var posX = e.clientX - c.getBoundingClientRect().left;
     var posY = e.clientY - c.getBoundingClientRect().top;
 
-    if(showPoints.checked) createCp([posX, posY]);
+    if(showPoints.checked) createCp([posX, posY], "#f08b9c");
     controlList[curveCount][pointCount] = [posX,posY];
     // se tiver mais de um ponto, eu faco uma linha
-    if(pointCount > 0 && showLines.checked) createLine(prevPoint, [posX,posY], "#f08b9c", 1, false);
-    if(pointCount > 0) createCurve();
+    if(pointCount > 0){
+        enableBut(cpBut);
+        if(showLines.checked) createLine(prevPoint, [posX,posY], "#f08b9c", 1);
+        createCurve(curveCount);
+    }
     prevPoint = [posX, posY];
     pointCount++;
 }
 
+c.addEventListener("click", (e) => {
+    if(selectedCurve != -1){
+        var posX = e.clientX - c.getBoundingClientRect().left;
+        var posY = e.clientY - c.getBoundingClientRect().top;
+
+        for(var i = 0; i < controlList[selectedCurve].length; i++){
+            if(posX <= controlList[selectedCurve][i][0] + 6 && posX >= controlList[selectedCurve][i][0] - 6){
+                if(posY <= controlList[selectedCurve][i][1] + 6 && posY >= controlList[selectedCurve][i][1] - 6){
+                    // achei esse ponto de controle nessa curva
+                    console.log("opa");
+                    selectedPoint = [posX, posY];
+                    drawExt();
+                }
+            }
+        }
+    }
+});
+
 // ================ FUNCOES DE DESENHO ======================
 
-function createCp(point){
+function createCp(point, color){
     ctx.beginPath();
-    ctx.strokeStyle = "#f08b9c";
+    ctx.strokeStyle = color;
     ctx.lineWidth = 1;
-    ctx.arc(point[0], point[1], 2, 0, 2 * Math.PI, false);
-    ctx.fillStyle = '#f08b9c';
-    ctx.fill();
-    ctx.stroke();
     ctx.arc(point[0], point[1], 6, 0, 2 * Math.PI, false);
+    ctx.fillStyle = color;
+    ctx.fill();
     ctx.stroke();
 }
 
-function createLine(pointA, pointB, color, size, selCurve){
+function createLine(pointA, pointB, color, size){
     ctx.beginPath();
     ctx.moveTo(pointA[0], pointA[1]);
     ctx.lineTo(pointB[0], pointB[1]);
-    if(selCurve) ctx.strokeStyle = "#ffab7b";
-    else ctx.strokeStyle = color;
+    ctx.strokeStyle = color;
     ctx.lineWidth = size;
     ctx.stroke();
 }
 
-function createCurve(){
+function createCurve(curveIndex){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawExt();
-    pointList[curveCount] = [];
-    for(var q = 0; q <= qttPoints; q++){
-        var t = q/qttPoints;
-        pointList[curveCount][q] = deCast(t);
-        if(q > 0 && showCurves.checked) createLine(pointList[curveCount][q-1], pointList[curveCount][q], "#afcbff", 3, false);
+    if(controlList[curveIndex].length > 0){
+        pointList[curveIndex] = [];
+        for(var q = 0; q <= qttPoints; q++){
+            var t = q/qttPoints;
+            pointList[curveIndex][q] = deCast(t,curveIndex);
+            if(q > 0 && showCurves.checked){
+                if(curveIndex == selectedCurve) createLine(pointList[curveIndex][q-1], pointList[curveIndex][q], "#ffb347");
+                else createLine(pointList[curveIndex][q-1], pointList[curveIndex][q], "#afcbff", 3);
+            } 
+        }
     }
 }
 
-
 function drawExt(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    var chosenPoint = false;
     if(showPoints.checked){
         for(var i = 0; i < controlList.length; i++){
             for(var j = 0; j < controlList[i].length; j++){
-                createCp(controlList[i][j]);
+                if(selectedPoint[0] <= controlList[i][j][0] + 6 && selectedPoint[0] >= controlList[i][j][0] - 6 && !chosenPoint){
+                    if(selectedPoint[1] <= controlList[i][j][1] + 6 && selectedPoint[1] >= controlList[i][j][1] - 6){
+                        createCp(controlList[i][j], "#000");
+                        chosenPoint = true;
+                    }
+                } else {
+                    createCp(controlList[i][j], "#f08b9c");
+                }
             }
         }
     }
     if(showLines.checked){
         for(var i = 0; i < controlList.length; i++){
             for(var j = 1; j < controlList[i].length; j++){
-                createLine(controlList[i][j-1], controlList[i][j], "#f08b9c", 1, false);
+                createLine(controlList[i][j-1], controlList[i][j], "#f08b9c", 1);
             }
         }
     }
@@ -100,8 +131,8 @@ function drawExt(){
         for(var i = 0; i < pointList.length; i++){
             if(i != curveCount){
                 for(var j = 1; j < pointList[i].length; j++){
-                    if(i == selectedCurve) createLine(pointList[i][j-1], pointList[i][j], "#afcbff", 3, true);
-                    else createLine(pointList[i][j-1], pointList[i][j], "#afcbff", 3, false);
+                    if(i == selectedCurve) createLine(pointList[i][j-1], pointList[i][j], "#ffb347", 3);
+                    else createLine(pointList[i][j-1], pointList[i][j], "#afcbff", 3);
                 }
             }
         }
@@ -115,6 +146,7 @@ function cpClick(){
         clickedCp = true;
         pointCount = 0;
         cpBut.innerHTML = "Pronto!";
+        disableBut(cpBut);
         controlList[curveCount] = [];
         c.addEventListener("click", addControlPoint);
     } else {
@@ -136,6 +168,9 @@ function clearCanvas(){
         cpClick();
     }
     curveCount = 0;
+    selectedCurve = -1;
+    delBut.style.visibility = 'hidden';
+    selBut.style.visibility = 'hidden';
 }
 
 function selButClick(){
@@ -144,6 +179,7 @@ function selButClick(){
     } else {
         selectedCurve++;
     }
+    selectedPoint = [-1,-1];
     drawExt();
     delBut.style.visibility = 'visible';
 }
@@ -153,19 +189,19 @@ function delButClick(){
     pointList.splice(selectedCurve,1);
     selectedCurve = -1;
     delBut.style.visibility = 'hidden';
+    if(curveCount == 0) selBut.style.visibility = 'hidden';
     drawExt();
     curveCount--;
-    if(curveCount == 0) selBut.style.visibility = 'hidden';
 }
 
 // ================ ALGORITMO DA CURVA ======================
 
-function deCast(u){
-    var n = controlList[curveCount].length;
+function deCast(u,curveIndex){
+    var n = controlList[curveIndex].length;
     var Q = [];
 
     for(var a = 0; a < n; a++){
-        Q[a] = controlList[curveCount][a].slice();
+        Q[a] = controlList[curveIndex][a].slice();
     }
 
     for(var k = 1; k < n; k++){
@@ -177,3 +213,14 @@ function deCast(u){
 
     return Q[0];
 }
+
+// ================ COISAS DE CSS ======================
+ function disableBut(but){
+    but.disabled = true;
+    but.style.backgroundColor = "lightgrey";
+ }
+
+ function enableBut(but){
+    but.disabled = false;
+    but.style.backgroundColor = "#69d0c8";
+ }

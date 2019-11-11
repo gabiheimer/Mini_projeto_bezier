@@ -31,9 +31,9 @@ body {
 }
 
 button {
-    padding: 10px;
+    padding: 11px;
     font-size: 16px;
-    border: 1px solid #69d0c8;
+    border: none;
     background-color: #69d0c8;
     border-radius: 10px;
     color: #fff;

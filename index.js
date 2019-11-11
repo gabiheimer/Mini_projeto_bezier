@@ -5,6 +5,8 @@ var avInput = document.getElementById("avNum");
 var hcpBut = document.getElementById("hcpBut");
 var hLinesBut = document.getElementById("hLinesBut");
 var hCurBut = document.getElementById("hCurvesBut");
+var delBut = document.getElementById("delBut");
+var selBut = document.getElementById("selectBut");
 
 // bools de botoes
 var clickedCp = false, hiddenCp = false, hiddenLines = false, hiddenCurves = false;
@@ -120,32 +122,28 @@ function cpClick(){
         curveCount++;
         cpBut.innerHTML = "Adicionar pontos de controle";
         c.removeEventListener("click", addControlPoint);
+        selBut.style.visibility = 'visible';
     }
 }
 
 function clearCanvas(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     // tirando curvas da memoria
-    curveCount = 0;
     controlList = [];
     pointList = [];
     // caso a pessoa clicou nisso enquanto criava uma curva
     if(clickedCp){
-        clickedCp = false;
-        cpBut.innerHTML = "Adicionar pontos de controle";
-        c.removeEventListener("click", addControlPoint);
+        cpClick();
     }
+    curveCount = 0;
     if(hiddenCp){
-        hiddenCp = false;
-        hcpBut.innerHTML = "Esconder pontos de Controle";
+        hcpButClick();
     }
     if(hiddenLines){
-        hiddenLines = false;
-        hLinesBut.innerHTML = "Mostrar linhas de controle";
+        hlButClick();
     }
     if(hiddenCurves){
-        hiddenCurves = false;
-        hCurBut.innerHTML = "Esconder curvas";
+        hcurButClick();
     }
 
 }
@@ -153,10 +151,10 @@ function clearCanvas(){
 function hcpButClick(){
     if(!hiddenCp){
         hiddenCp = true;
-        hcpBut.innerHTML = "Mostrar pontos de Controle";
+        hcpBut.innerHTML = "Mostrar pontos";
     } else {
         hiddenCp = false;
-        hcpBut.innerHTML = "Esconder pontos de Controle";
+        hcpBut.innerHTML = "Esconder pontos";
     }
     drawExt();
 }
@@ -164,10 +162,10 @@ function hcpButClick(){
 function hlButClick(){
     if(!hiddenLines){
         hiddenLines = true;
-        hLinesBut.innerHTML = "Mostrar linhas de controle";
+        hLinesBut.innerHTML = "Mostrar linhas";
     } else {
         hiddenLines = false;
-        hLinesBut.innerHTML = "Esconder linhas de controle";
+        hLinesBut.innerHTML = "Esconder linhas";
     }
     drawExt();
 }
@@ -190,6 +188,17 @@ function selButClick(){
         selectedCurve++;
     }
     drawExt();
+    delBut.style.visibility = 'visible';
+}
+
+function delButClick(){
+    controlList.splice(selectedCurve,1);
+    pointList.splice(selectedCurve,1);
+    selectedCurve = -1;
+    delBut.style.visibility = 'hidden';
+    drawExt();
+    curveCount--;
+    if(curveCount == 0) selBut.style.visibility = 'hidden';
 }
 
 // ================ ALGORITMO DA CURVA ======================

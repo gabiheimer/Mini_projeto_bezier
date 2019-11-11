@@ -60,3 +60,7 @@ button:focus{
     color: #f08b9c;
     outline: none;
 }
+
+#delBut, #selectBut{
+    visibility: hidden;
+}

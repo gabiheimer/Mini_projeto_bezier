@@ -7,6 +7,7 @@ var selBut = document.getElementById("selectBut");
 var showPoints = document.getElementById("showPoints");
 var showLines = document.getElementById("showLines");
 var showCurves = document.getElementById("showCurves");
+var delPointBut = document.getElementById("delPointBut");
 
 // bools de botoes
 var clickedCp = false;
@@ -15,7 +16,7 @@ var clickedCp = false;
 var pointCount, prevPoint, curveCount = 0, qttPoints = 100;
 var controlList = [], pointList = [];
 var selectedCurve = -1;
-var selectedPoint = [-1,-1];
+var selectedPoint = -1;
 
 // ================ EVENT LISTENERS ======================
 avInput.addEventListener("keypress", (e) => {
@@ -58,7 +59,8 @@ c.addEventListener("click", (e) => {
                 if(posY <= controlList[selectedCurve][i][1] + 6 && posY >= controlList[selectedCurve][i][1] - 6){
                     // achei esse ponto de controle nessa curva
                     console.log("opa");
-                    selectedPoint = [posX, posY];
+                    selectedPoint = i;
+                    delPointBut.style.visibility = 'visible';
                     drawExt();
                 }
             }
@@ -105,18 +107,11 @@ function createCurve(curveIndex){
 
 function drawExt(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    var chosenPoint = false;
     if(showPoints.checked){
         for(var i = 0; i < controlList.length; i++){
             for(var j = 0; j < controlList[i].length; j++){
-                if(selectedPoint[0] <= controlList[i][j][0] + 6 && selectedPoint[0] >= controlList[i][j][0] - 6 && !chosenPoint){
-                    if(selectedPoint[1] <= controlList[i][j][1] + 6 && selectedPoint[1] >= controlList[i][j][1] - 6){
-                        createCp(controlList[i][j], "#000");
-                        chosenPoint = true;
-                    }
-                } else {
-                    createCp(controlList[i][j], "#f08b9c");
-                }
+                if(i == selectedCurve && j == selectedPoint) createCp(controlList[i][j], "#000");
+                else createCp(controlList[i][j], "#f08b9c");
             }
         }
     }
@@ -181,6 +176,7 @@ function selButClick(){
     }
     selectedPoint = [-1,-1];
     drawExt();
+    delPointBut.style.visibility = 'hidden';
     delBut.style.visibility = 'visible';
 }
 
@@ -192,6 +188,10 @@ function delButClick(){
     if(curveCount == 0) selBut.style.visibility = 'hidden';
     drawExt();
     curveCount--;
+}
+
+function delpButClick(){
+   // controlList[selectedPoint][selectedPoint]
 }
 
 // ================ ALGORITMO DA CURVA ======================

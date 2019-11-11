@@ -282,11 +282,9 @@ function deCast(u,curveIndex){
  function disableBut(but){
     but.disabled = true;
     but.style.backgroundColor = "#f08b9c";
-    but.style.boxShadow = 'none';
  }
 
  function enableBut(but){
     but.disabled = false;
     but.style.backgroundColor = "#69d0c8";
-    but.style.boxShadow = '0px 6px 5px 0px rgba(0,0,0,0.13)';
  }

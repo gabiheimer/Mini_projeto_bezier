@@ -55,14 +55,10 @@ button {
     background-color: #69d0c8;
     border-radius: 10px;
     color: #fff;
-    -webkit-box-shadow: 0px 6px 5px 0px rgba(0,0,0,0.13);
-    -moz-box-shadow: 0px 6px 5px 0px rgba(0,0,0,0.13);
-    box-shadow: 0px 6px 5px 0px rgba(0,0,0,0.13);
     text-transform: capitalize;
 }
 
 button:active {
-    box-shadow: 0 0 0;
     transform: translateY(4px);
 }
 

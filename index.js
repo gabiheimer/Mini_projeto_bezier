@@ -114,13 +114,13 @@ function cpClick(){
     if(!clickedCp){
         clickedCp = true;
         pointCount = 0;
-        cpBut.innerHTML = "Criar curva";
+        cpBut.innerHTML = "Pronto!";
         controlList[curveCount] = [];
         c.addEventListener("click", addControlPoint);
     } else {
         clickedCp = false;
         curveCount++;
-        cpBut.innerHTML = "Adicionar pontos de controle";
+        cpBut.innerHTML = "criar curva";
         c.removeEventListener("click", addControlPoint);
         selBut.style.visibility = 'visible';
     }
@@ -136,16 +136,6 @@ function clearCanvas(){
         cpClick();
     }
     curveCount = 0;
-    if(hiddenCp){
-        hcpButClick();
-    }
-    if(hiddenLines){
-        hlButClick();
-    }
-    if(hiddenCurves){
-        hcurButClick();
-    }
-
 }
 
 function hcpButClick(){

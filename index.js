@@ -9,6 +9,7 @@ var showLines = document.getElementById("showLines");
 var showCurves = document.getElementById("showCurves");
 var delPointBut = document.getElementById("delPointBut");
 var newPointBut = document.getElementById("newPointBut");
+var clearBut = document.getElementById("clearBut");
 
 // bools de botoes
 var clickedCp = false, clickedNp = false;
@@ -38,11 +39,11 @@ function addControlPoint(e){
     var posX = e.clientX - c.getBoundingClientRect().left;
     var posY = e.clientY - c.getBoundingClientRect().top;
 
-    if(showPoints.checked) createCp([posX, posY], "#f08b9c");
+    if(showPoints.checked) createCp([posX, posY], "#69d0c8");
     controlList[curveCount][pointCount] = [posX,posY];
     // se tiver mais de um ponto, eu faco uma linha
     if(pointCount > 0){
-        enableBut(cpBut);
+        if(clickedCp) enableBut(cpBut);
         if(showLines.checked) createLine(prevPoint, [posX,posY], "#f08b9c", 1);
         createCurve(curveCount);
     }
@@ -111,7 +112,7 @@ function createCurve(curveIndex){
             pointList[curveIndex][q] = deCast(t,curveIndex);
             if(q > 0 && showCurves.checked){
                 if(curveIndex == selectedCurve) createLine(pointList[curveIndex][q-1], pointList[curveIndex][q], "#ffb347", 3);
-                else createLine(pointList[curveIndex][q-1], pointList[curveIndex][q], "#afcbff", 3);
+                else createLine(pointList[curveIndex][q-1], pointList[curveIndex][q], "#69d0c8", 3);
             } 
         }
     }
@@ -139,7 +140,7 @@ function drawExt(){
             if(i != curveCount && pointList[i] != undefined){
                 for(var j = 1; j < pointList[i].length; j++){
                     if(i == selectedCurve) createLine(pointList[i][j-1], pointList[i][j], "#ffb347", 3);
-                    else createLine(pointList[i][j-1], pointList[i][j], "#afcbff", 3);
+                    else createLine(pointList[i][j-1], pointList[i][j], "#69d0c8", 3);
                 }
             }
         }
@@ -150,13 +151,23 @@ function drawExt(){
 
 function cpClick(){
     if(!clickedCp){
+        disableBut(cpBut);
+        disableBut(clearBut);
+        disableBut(newPointBut);
+        disableBut(selBut);
+        disableBut(delBut);
+        disableBut(delPointBut);
         clickedCp = true;
         pointCount = 0;
         cpBut.innerHTML = "Pronto!";
-        disableBut(cpBut);
         controlList[curveCount] = [];
         c.addEventListener("click", addControlPoint);
     } else {
+        enableBut(clearBut);
+        enableBut(newPointBut);
+        enableBut(selBut);
+        enableBut(delBut);
+        enableBut(delPointBut);
         clickedCp = false;
         curveCount++;
         cpBut.innerHTML = "criar curva";
@@ -216,6 +227,11 @@ function delpButClick(){
 
 function npButClick(){
     if(!clickedNp){
+        disableBut(cpBut);
+        disableBut(clearBut);
+        disableBut(selBut);
+        disableBut(delBut);
+        disableBut(delPointBut);
         clickedNp = true;
         newPointBut.innerHTML = "Pronto!";
         pointCount = controlList[selectedCurve].length;
@@ -223,11 +239,23 @@ function npButClick(){
         curveCount = selectedCurve;
         c.addEventListener("click", addControlPoint);
     } else {
+        enableBut(cpBut);
+        enableBut(clearBut);
+        enableBut(selBut);
+        enableBut(delBut);
+        enableBut(delPointBut);
         clickedNp = false;
         newPointBut.innerHTML = "Adicionar Ponto";
         curveCount = controlList.length;
         c.removeEventListener("click", addControlPoint);
     }
+}
+
+function scCheck(){
+    var gambiarra = curveCount;
+    curveCount = -1;
+    drawExt();
+    curveCount = gambiarra;
 }
 
 // ================ ALGORITMO DA CURVA ======================
@@ -253,10 +281,12 @@ function deCast(u,curveIndex){
 // ================ COISAS DE CSS ======================
  function disableBut(but){
     but.disabled = true;
-    but.style.backgroundColor = "lightgrey";
+    but.style.backgroundColor = "#f08b9c";
+    but.style.boxShadow = 'none';
  }
 
  function enableBut(but){
     but.disabled = false;
     but.style.backgroundColor = "#69d0c8";
+    but.style.boxShadow = '0px 6px 5px 0px rgba(0,0,0,0.13)';
  }

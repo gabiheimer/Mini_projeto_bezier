@@ -49,7 +49,7 @@ function addControlPoint(e){
     pointCount++;
 }
 
-c.addEventListener("click", (e) => {
+c.addEventListener("mousedown", (e) => {
     if(selectedCurve != -1){
         var posX = e.clientX - c.getBoundingClientRect().left;
         var posY = e.clientY - c.getBoundingClientRect().top;
@@ -58,15 +58,26 @@ c.addEventListener("click", (e) => {
             if(posX <= controlList[selectedCurve][i][0] + 6 && posX >= controlList[selectedCurve][i][0] - 6){
                 if(posY <= controlList[selectedCurve][i][1] + 6 && posY >= controlList[selectedCurve][i][1] - 6){
                     // achei esse ponto de controle nessa curva
-                    console.log("opa");
                     selectedPoint = i;
                     delPointBut.style.visibility = 'visible';
                     drawExt();
+                    c.addEventListener("mousemove", movingPoint);
                 }
             }
         }
     }
 });
+
+function movingPoint(event){
+    var newX = event.clientX - c.getBoundingClientRect().left;
+    var newY = event.clientY - c.getBoundingClientRect().top;
+    controlList[selectedCurve][selectedPoint] = [newX, newY];
+    delete pointList[selectedCurve];
+    createCurve(selectedCurve);
+    c.addEventListener("mouseup", () => {
+        c.removeEventListener("mousemove", movingPoint);
+    });
+}
 
 // ================ FUNCOES DE DESENHO ======================
 
@@ -98,7 +109,7 @@ function createCurve(curveIndex){
             var t = q/qttPoints;
             pointList[curveIndex][q] = deCast(t,curveIndex);
             if(q > 0 && showCurves.checked){
-                if(curveIndex == selectedCurve) createLine(pointList[curveIndex][q-1], pointList[curveIndex][q], "#ffb347");
+                if(curveIndex == selectedCurve) createLine(pointList[curveIndex][q-1], pointList[curveIndex][q], "#ffb347", 3);
                 else createLine(pointList[curveIndex][q-1], pointList[curveIndex][q], "#afcbff", 3);
             } 
         }
@@ -164,6 +175,7 @@ function clearCanvas(){
     }
     curveCount = 0;
     selectedCurve = -1;
+    selectedPoint = -1;
     delBut.style.visibility = 'hidden';
     selBut.style.visibility = 'hidden';
 }
@@ -184,10 +196,10 @@ function delButClick(){
     controlList.splice(selectedCurve,1);
     pointList.splice(selectedCurve,1);
     selectedCurve = -1;
+    curveCount--;
     delBut.style.visibility = 'hidden';
     if(curveCount == 0) selBut.style.visibility = 'hidden';
     drawExt();
-    curveCount--;
 }
 
 function delpButClick(){

@@ -12,9 +12,12 @@
             <input id="avNum" type="number" placeholder="100" onclick="cleanInput()">
             <button onclick="cpClick()" id="cpBut">Criar curva</button>
             <button onclick="clearCanvas()" id="clearBut">Limpar canvas</button>
-            <button id="hcpBut" onclick="hcpButClick()">Esconder pontos</button>
-            <button id="hLinesBut" onclick="hlButClick()">Esconder linhas</button>
-            <button id="hCurvesBut" onclick="hcurButClick()">Esconder curvas</button>
+            <label for="showPoints">Mostrar Pontos</label>
+            <input checked onchange="drawExt()" type="checkbox" name="showPoints" id="showPoints">
+            <label for="showLines">Mostrar Linhas</label>
+            <input checked onchange="drawExt()" type="checkbox" name="showLines" id="showLines">
+            <label for="showCurves">Mostrar Curvas</label>
+            <input checked onchange="drawExt()" type="checkbox" name="showCurves" id="showCurves">
             <button id="selectBut" onclick="selButClick()">Selecionar curva</button>
             <button id="delBut" onclick="delButClick()">Deletar curva</button>
         </div>

@@ -2,14 +2,14 @@ var c = document.getElementById("canvas");
 var cpBut = document.getElementById("cpBut");
 var ctx = c.getContext("2d");
 var avInput = document.getElementById("avNum");
-var hcpBut = document.getElementById("hcpBut");
-var hLinesBut = document.getElementById("hLinesBut");
-var hCurBut = document.getElementById("hCurvesBut");
 var delBut = document.getElementById("delBut");
 var selBut = document.getElementById("selectBut");
+var showPoints = document.getElementById("showPoints");
+var showLines = document.getElementById("showLines");
+var showCurves = document.getElementById("showCurves");
 
 // bools de botoes
-var clickedCp = false, hiddenCp = false, hiddenLines = false, hiddenCurves = false;
+var clickedCp = false;
 
 // variaveis globais que uso no addControlPoint - nao me julgue pf
 var pointCount, prevPoint, curveCount = 0, qttPoints = 100;
@@ -35,10 +35,10 @@ function addControlPoint(e){
     var posX = e.clientX - c.getBoundingClientRect().left;
     var posY = e.clientY - c.getBoundingClientRect().top;
 
-    if(!hiddenCp) createCp([posX, posY]);
+    if(showPoints.checked) createCp([posX, posY]);
     controlList[curveCount][pointCount] = [posX,posY];
     // se tiver mais de um ponto, eu faco uma linha
-    if(pointCount > 0 && !hiddenLines) createLine(prevPoint, [posX,posY], "#f08b9c", 1, false);
+    if(pointCount > 0 && showLines.checked) createLine(prevPoint, [posX,posY], "#f08b9c", 1, false);
     if(pointCount > 0) createCurve();
     prevPoint = [posX, posY];
     pointCount++;
@@ -75,28 +75,28 @@ function createCurve(){
     for(var q = 0; q <= qttPoints; q++){
         var t = q/qttPoints;
         pointList[curveCount][q] = deCast(t);
-        if(q > 0 && !hiddenCurves) createLine(pointList[curveCount][q-1], pointList[curveCount][q], "#afcbff", 3, false);
+        if(q > 0 && showCurves.checked) createLine(pointList[curveCount][q-1], pointList[curveCount][q], "#afcbff", 3, false);
     }
 }
 
 
 function drawExt(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    if(!hiddenCp){
+    if(showPoints.checked){
         for(var i = 0; i < controlList.length; i++){
             for(var j = 0; j < controlList[i].length; j++){
                 createCp(controlList[i][j]);
             }
         }
     }
-    if(!hiddenLines){
+    if(showLines.checked){
         for(var i = 0; i < controlList.length; i++){
             for(var j = 1; j < controlList[i].length; j++){
                 createLine(controlList[i][j-1], controlList[i][j], "#f08b9c", 1, false);
             }
         }
     }
-    if(!hiddenCurves){
+    if(showCurves.checked){
         for(var i = 0; i < pointList.length; i++){
             if(i != curveCount){
                 for(var j = 1; j < pointList[i].length; j++){
@@ -136,39 +136,6 @@ function clearCanvas(){
         cpClick();
     }
     curveCount = 0;
-}
-
-function hcpButClick(){
-    if(!hiddenCp){
-        hiddenCp = true;
-        hcpBut.innerHTML = "Mostrar pontos";
-    } else {
-        hiddenCp = false;
-        hcpBut.innerHTML = "Esconder pontos";
-    }
-    drawExt();
-}
-
-function hlButClick(){
-    if(!hiddenLines){
-        hiddenLines = true;
-        hLinesBut.innerHTML = "Mostrar linhas";
-    } else {
-        hiddenLines = false;
-        hLinesBut.innerHTML = "Esconder linhas";
-    }
-    drawExt();
-}
-
-function hcurButClick(){
-    if(!hiddenCurves){
-        hiddenCurves = true;
-        hCurBut.innerHTML = "Mostrar curvas";
-    } else {
-        hiddenCurves = false;
-        hCurBut.innerHTML = "Esconder curvas";
-    }
-    drawExt();
 }
 
 function selButClick(){

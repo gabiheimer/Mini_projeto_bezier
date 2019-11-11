@@ -61,6 +61,6 @@ button:focus{
     outline: none;
 }
 
-#delBut, #selectBut, #delPointBut{
+#delBut, #selectBut, #delPointBut, #newPointBut{
     visibility: hidden;
 }

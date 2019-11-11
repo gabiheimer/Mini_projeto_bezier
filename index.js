@@ -8,9 +8,10 @@ var showPoints = document.getElementById("showPoints");
 var showLines = document.getElementById("showLines");
 var showCurves = document.getElementById("showCurves");
 var delPointBut = document.getElementById("delPointBut");
+var newPointBut = document.getElementById("newPointBut");
 
 // bools de botoes
-var clickedCp = false;
+var clickedCp = false, clickedNp = false;
 
 // variaveis globais que uso no addControlPoint - nao me julgue pf
 var pointCount, prevPoint, curveCount = 0, qttPoints = 100;
@@ -178,6 +179,7 @@ function clearCanvas(){
     selectedPoint = -1;
     delBut.style.visibility = 'hidden';
     selBut.style.visibility = 'hidden';
+    newPointBut.style.visibility = 'hidden';
 }
 
 function selButClick(){
@@ -190,6 +192,7 @@ function selButClick(){
     drawExt();
     delPointBut.style.visibility = 'hidden';
     delBut.style.visibility = 'visible';
+    newPointBut.style.visibility = 'visible';
 }
 
 function delButClick(){
@@ -197,6 +200,7 @@ function delButClick(){
     pointList.splice(selectedCurve,1);
     selectedCurve = -1;
     curveCount--;
+    newPointBut.style.visibility = 'hidden';
     delBut.style.visibility = 'hidden';
     if(curveCount == 0) selBut.style.visibility = 'hidden';
     drawExt();
@@ -208,6 +212,22 @@ function delpButClick(){
     selectedPoint = -1;
     createCurve(selectedCurve);
     delPointBut.style.visibility = 'hidden';
+}
+
+function npButClick(){
+    if(!clickedNp){
+        clickedNp = true;
+        newPointBut.innerHTML = "Pronto!";
+        pointCount = controlList[selectedCurve].length;
+        prevPoint = controlList[selectedCurve][pointCount-1];
+        curveCount = selectedCurve;
+        c.addEventListener("click", addControlPoint);
+    } else {
+        clickedNp = false;
+        newPointBut.innerHTML = "Adicionar Ponto";
+        curveCount = controlList.length;
+        c.removeEventListener("click", addControlPoint);
+    }
 }
 
 // ================ ALGORITMO DA CURVA ======================

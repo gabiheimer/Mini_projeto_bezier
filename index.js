@@ -124,7 +124,7 @@ function drawExt(){
     }
     if(showCurves.checked){
         for(var i = 0; i < pointList.length; i++){
-            if(i != curveCount){
+            if(i != curveCount && pointList[i] != undefined){
                 for(var j = 1; j < pointList[i].length; j++){
                     if(i == selectedCurve) createLine(pointList[i][j-1], pointList[i][j], "#ffb347", 3);
                     else createLine(pointList[i][j-1], pointList[i][j], "#afcbff", 3);
@@ -191,7 +191,11 @@ function delButClick(){
 }
 
 function delpButClick(){
-   // controlList[selectedPoint][selectedPoint]
+    controlList[selectedCurve].splice(selectedPoint,1);
+    delete pointList[selectedCurve];
+    selectedPoint = -1;
+    createCurve(selectedCurve);
+    delPointBut.style.visibility = 'hidden';
 }
 
 // ================ ALGORITMO DA CURVA ======================

@@ -39,7 +39,7 @@ function addControlPoint(e){
     var posX = e.clientX - c.getBoundingClientRect().left;
     var posY = e.clientY - c.getBoundingClientRect().top;
 
-    if(showPoints.checked) createCp([posX, posY], "#69d0c8");
+    if(showPoints.checked) createCp([posX, posY], "#f08b9c");
     controlList[curveCount][pointCount] = [posX,posY];
     // se tiver mais de um ponto, eu faco uma linha
     if(pointCount > 0){

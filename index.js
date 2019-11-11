@@ -245,7 +245,7 @@ function npButClick(){
         enableBut(delBut);
         enableBut(delPointBut);
         clickedNp = false;
-        newPointBut.innerHTML = "Adicionar Ponto";
+        newPointBut.innerHTML = "Adicionar Pontos";
         curveCount = controlList.length;
         c.removeEventListener("click", addControlPoint);
     }

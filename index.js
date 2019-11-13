@@ -190,7 +190,9 @@ function clearCanvas(){
     selectedPoint = -1;
     delBut.style.visibility = 'hidden';
     selBut.style.visibility = 'hidden';
+    delPointBut.style.visibility = 'hidden';
     newPointBut.style.visibility = 'hidden';
+
 }
 
 function selButClick(){
@@ -213,6 +215,7 @@ function delButClick(){
     curveCount--;
     newPointBut.style.visibility = 'hidden';
     delBut.style.visibility = 'hidden';
+    delPointBut.style.visibility = 'hidden';
     if(curveCount == 0) selBut.style.visibility = 'hidden';
     drawExt();
 }
